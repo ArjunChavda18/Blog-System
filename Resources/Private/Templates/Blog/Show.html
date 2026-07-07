@@ -1,0 +1,81 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:nitsan="http://typo3.org/ns/NITSAN/BlogSystem/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<div class="blog-detail" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <f:comment> <f:debug>{_all}</f:debug> </f:comment>
+    
+    <!-- Back to List Button -->
+    <f:link.action action="list" style="margin-bottom: 20px; display: inline-block; text-decoration: none; color: #007bff;">
+        &larr; Back to List
+    </f:link.action>
+
+    <!-- Full Title -->
+    <h1 style="font-size: 2.5rem; margin-bottom: 10px;">{blog.title}</h1>
+
+    <!-- Full Description (RTE Render) -->
+    <div class="blog-content" style="margin: 20px 0; line-height: 1.6; font-size: 1.1rem;">
+        <p style="color: #666; font-size: 0.95rem; line-height: 1.5; margin: 0;">
+            <nitsan:wordTruncate content="{blog.description}"/>
+        </p>
+    </div>
+
+    <!-- All Images (Looping through multiple FAL images) -->
+    <f:if condition="{blog.image}">
+        <h3 style="margin-top: 30px; border-bottom: 20px;">Gallery:</h3>
+        <p> Date : <f:format.date format="d.m.Y - H:i:s">now</f:format.date></p>
+        <div class="blog-gallery" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+            
+            <f:for each="{blog.image}" as="singleImage">
+                <div class="blog-image-item" style="flex: 1 1 calc(33.33% - 15px); min-width: 200px;">
+                    <f:image image="{singleImage}" width="600" alt="{blog.title}" style="width: 100%; height: auto; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" />
+                </div>
+            </f:for>
+            
+        </div>
+    </f:if>
+
+    <hr />
+    <!-- 1. Approved Comments Ko Dikhane Ka Section -->
+    <div class="comments-section" style="margin-top: 30px;">
+        <h3>Comments ({blog.comments -> f:count()})</h3>
+        
+        <f:if condition="{blog.comments}">
+            <f:then>
+                <ul style="list-style: none; padding-left: 0;">
+                    <f:for each="{blog.comments}" as="comment">
+                        <li style="background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-left: 4px solid #007bff; border-radius: 4px;">
+                            <strong>{comment.authorName}</strong> <br />
+                            <p style="margin: 5px 0 0 0;">{comment.commentText}</p>
+                        </li>
+                        <f:link.action action="deleteComment" arguments="{blog: blog, comment: comment}">Delete</f:link.action>
+                    </f:for>
+                </ul>
+            </f:then>
+            <f:else>
+                <p>No comments yet. Be the first to comment!</p>
+            </f:else>
+        </f:if>
+    </div>
+
+    <hr />
+
+    <!-- 2. Naya Comment Submit Karne Ka Form -->
+    <div class="comment-form-section" style="margin-top: 30px; background: #f4f4f4; padding: 20px; border-radius: 5px;">
+        <h3>Add a Comment</h3>
+        
+        <!-- Yahan hum controller ke 'createComment' action ko hit karenge aur current blog ka object pass karenge -->
+        <f:form action="createComment" name="newComment" object="{newComment}" arguments="{blog: blog}">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;"><strong>Your Name:</strong></label>
+                <f:form.textfield property="authorName" required="true" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;"><strong>Comment:</strong></label>
+                <f:form.textarea property="commentText" required="true" rows="5" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+            </div>
+
+            <f:form.submit value="Submit Comment" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;" />
+        </f:form>
+    </div>
+
+</html>

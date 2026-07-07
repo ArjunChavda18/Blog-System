@@ -1,0 +1,6 @@
+name: 'blog_system'
+label: 'Blog Management System'
+homepage: 'https://typo3.org'
+dependencies:
+  - 'typo3/cms-core'
+  - 'typo3/cms-fluid-styled-content'

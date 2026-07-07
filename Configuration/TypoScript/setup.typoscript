@@ -1,0 +1,37 @@
+plugin.tx_blogsystem_ {
+    view {
+        templateRootPaths.0 = EXT:blog_system/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_blogsystem_.view.templateRootPath}
+        partialRootPaths.0 = EXT:blog_system/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_blogsystem_.view.partialRootPath}
+        layoutRootPaths.0 = EXT:blog_system/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_blogsystem_.view.layoutRootPath}
+    }
+    persistence {
+        #storagePid = {$plugin.tx_blogsystem_.persistence.storagePid}
+        #recursive = 1
+    }
+    features {
+        #skipDefaultArguments = 1
+        # if set to 1, the enable fields are ignored in BE context
+        ignoreAllEnableFieldsInBe = 0
+    }
+    mvc {
+        #callDefaultActionIfActionCantBeResolved = 1
+    }
+}
+
+# Module configuration
+module.tx_blogsystem_web_blogsystem {
+    persistence {
+        storagePid = {$module.tx_blogsystem_.persistence.storagePid}
+    }
+    view {
+        templateRootPaths.0 = EXT:blog_system/Resources/Private/Backend/Templates/
+        templateRootPaths.1 = {$module.tx_blogsystem_.view.templateRootPath}
+        partialRootPaths.0 = EXT:blog_system/Resources/Private/Backend/Partials/
+        partialRootPaths.1 = {$module.tx_blogsystem_.view.partialRootPath}
+        layoutRootPaths.0 = EXT:blog_system/Resources/Private/Backend/Layouts/
+        layoutRootPaths.1 = {$module.tx_blogsystem_.view.layoutRootPath}
+    }
+}

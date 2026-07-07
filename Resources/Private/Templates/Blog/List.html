@@ -1,0 +1,45 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<h1 style="font-family: sans-serif; margin-bottom: 30px;">Blog Management System</h1>
+<div class="blog-list-container" style="max-width: 300px; margin: 0 auto;">
+
+    <f:if condition="{blogs}">
+        <f:for each="{blogs}" as="blog">
+            <f:cycle values="{0: '#f9f9f9', 1: '#ffffff'}" as="rowColor">
+                
+                <!-- Pure card ko link banaya -->
+                <f:link.action action="show" arguments="{blog: blog}" style="text-decoration: none; color: inherit; display: block;">
+                    <div class="blog-card" style="background-color: {rowColor}; padding: 20px; margin-bottom: 25px; border-radius: 8px; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;">
+                        
+                        <!-- Title -->
+                        <h2 style="margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; color: #333;">{blog.title}</h2>
+                        
+                        <p style="color: #999; font-size: 0.85rem; margin-bottom: 15px;">
+                            📅 Published on: 
+                            <f:format.date format="d-m-Y">now</f:format.date>
+                        </p>
+                        <!-- Image Layout (Sirf pehli image ko thumbnail dikhane ke liye clean logic) -->
+                        <f:if condition="{blog.image}">
+                            <div class="blog-thumbnail" style="margin-bottom: 15px; max-width: 250px;">
+                                <f:for each="{blog.image}" as="thumbImage" iteration="imgIterator">
+                                    <f:if condition="{imgIterator.isFirst}">
+                                        <f:image image="{thumbImage}" width="250" alt="{blog.title}" style="width: 100%; height: auto; border-radius: 4px;" />
+                                    </f:if>
+                                </f:for>
+                            </div>
+                        </f:if>
+                        
+                        <!-- Short Description (Fixed error by replacing length with maxCharacters) -->
+                        <p style="color: #666; font-size: 1.05rem; line-height: 1.5; margin: 0;">
+                            <f:format.crop maxCharacters="50" append="..."><f:format.stripTags>{blog.description}</f:format.stripTags></f:format.crop>
+                        </p>
+                        
+                    </div>
+                </f:link.action>
+
+            </f:cycle>
+        </f:for>
+    </f:if>
+</div>
+
+</html>

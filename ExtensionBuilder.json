@@ -1,0 +1,136 @@
+{
+    "modules": [
+        {
+            "config": {
+                "position": [
+                    23.6754150390625,
+                    52.13420104980469
+                ]
+            },
+            "value": {
+                "name": "Blog",
+                "objectsettings": {
+                    "uid": 1327222385412,
+                    "type": "Entity",
+                    "aggregateRoot": false,
+                    "sorting": false,
+                    "addDeletedField": true,
+                    "addHiddenField": true,
+                    "addStarttimeEndtimeFields": true,
+                    "categorizable": false,
+                    "description": "",
+                    "mapToTable": "",
+                    "parentClass": ""
+                },
+                "actionGroup": {
+                    "_default0_index": false,
+                    "_default1_list": true,
+                    "_default2_show": true,
+                    "_default3_new_create": false,
+                    "_default4_edit_update": false,
+                    "_default5_delete": false,
+                    "customActions": []
+                },
+                "propertyGroup": {
+                    "properties": [
+                        {
+                            "uid": "356683133890",
+                            "propertyName": "title",
+                            "propertyType": "String",
+                            "propertyDescription": "",
+                            "allowedFileTypes": "",
+                            "maxItems": 1,
+                            "propertyIsRequired": false,
+                            "propertyIsNullable": false,
+                            "propertyIsExcludeField": true,
+                            "propertyIsL10nModeExclude": false,
+                            "selectItems": []
+                        },
+                        {
+                            "uid": "91851131897",
+                            "propertyName": "description",
+                            "propertyType": "Text",
+                            "propertyDescription": "",
+                            "allowedFileTypes": "",
+                            "maxItems": 1,
+                            "propertyIsRequired": false,
+                            "propertyIsNullable": false,
+                            "propertyIsExcludeField": true,
+                            "propertyIsL10nModeExclude": false,
+                            "selectItems": []
+                        },
+                        {
+                            "uid": "1287757574087",
+                            "propertyName": "image",
+                            "propertyType": "Image",
+                            "propertyDescription": "",
+                            "allowedFileTypes": "",
+                            "maxItems": 1,
+                            "propertyIsRequired": false,
+                            "propertyIsNullable": false,
+                            "propertyIsExcludeField": true,
+                            "propertyIsL10nModeExclude": false,
+                            "selectItems": []
+                        }
+                    ]
+                },
+                "relationGroup": {
+                    "relations": []
+                }
+            }
+        }
+    ],
+    "wires": [],
+    "properties": {
+        "name": "Blog Management System",
+        "vendorName": "NITSAN",
+        "extensionKey": "blog_system",
+        "originalExtensionKey": "blog_system",
+        "originalVendorName": "NITSAN",
+        "description": "A simple extension to manage blogs and posts.",
+        "emConf": {
+            "category": "plugin",
+            "custom_category": "",
+            "version": "1.0.0",
+            "state": "alpha",
+            "disableVersioning": false,
+            "disableLocalization": false,
+            "generateDocumentationTemplate": true,
+            "generateEmptyGitRepository": true,
+            "generateEditorConfig": true,
+            "generateSiteSet": false,
+            "sourceLanguage": "en",
+            "targetVersion": "13.4.0-13.4.99",
+            "dependsOn": "typo3 => 13.4.0-13.4.99\n"
+        },
+        "category": "plugin",
+        "custom_category": "",
+        "version": "1.0.0",
+        "state": "alpha",
+        "disableVersioning": false,
+        "disableLocalization": false,
+        "generateDocumentationTemplate": true,
+        "generateEmptyGitRepository": true,
+        "generateEditorConfig": true,
+        "generateSiteSet": false,
+        "sourceLanguage": "en",
+        "targetVersion": "13.4.0-13.4.99",
+        "dependsOn": "typo3 => 13.4.0-13.4.99\n",
+        "persons": [
+            {
+                "name": "Arjun",
+                "role": "Developer",
+                "email": "arjunchavda@gmail.com",
+                "company": "Nitsan"
+            }
+        ],
+        "plugins": [],
+        "backendModules": []
+    },
+    "storagePath": "\/var\/www\/html\/packages\/",
+    "log": {
+        "last_modified": "2026-07-01 01:17",
+        "extension_builder_version": "13.3.4",
+        "be_user": "Arjun (1)"
+    }
+}

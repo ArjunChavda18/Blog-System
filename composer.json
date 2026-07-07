@@ -1,0 +1,52 @@
+{
+    "name": "nitsan/blog-system",
+    "type": "typo3-cms-extension",
+    "description": "A simple extension to manage blogs and posts.",
+    "authors": [
+        {
+            "name": "Arjun",
+            "role": "Developer",
+            "email": "arjunchavda@gmail.com",
+            "homepage": "Nitsan"
+        }
+    ],
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.2",
+        "typo3/cms-core": "^13.4",
+        "typo3/cms-extbase": "^13.4"
+    },
+    "require-dev": {
+        "typo3/testing-framework": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NITSAN\\BlogSystem\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NITSAN\\BlogSystem\\Tests\\": "Tests"
+        }
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+        ]
+    },
+    "extra": {
+        "typo3/cms": {
+            "web-dir": ".Build/public",
+            "extension-key": "blog_system"
+        },
+        "typo3/cms-core": {
+            "site-sets": {
+                "blog_system": "Configuration/Sets/BlogSystem"
+            }
+        }
+    }
+}

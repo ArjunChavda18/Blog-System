@@ -19,22 +19,60 @@ class BlogController extends ActionController
     {
         $this->blogRepository = $blogRepository;
     }
-
-    public function listAction(): ResponseInterface
+    
+    /**
+     * List Action with Filtering Options
+     * 
+     * @param string|null $searchTitle
+     * @param string|null $createDate
+     * @param string|null $modifyDate
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function listAction(
+        string $searchTitle = null, 
+        string $createDate = null, 
+        string $modifyDate = null
+    ): ResponseInterface
     {
         $limit = (int)($this->settings['limit'] ?? 0);
         $sorting = $this->settings['sortOrder'] ?? 'DESC';
         $storagePid = (int)($this->settings['overrideStoragePid'] ?? 0);
-        // $datepicker = $this->settings['datepicker'] ?? '';
 
-        $blogs = $this->blogRepository->findBlogs(
-            $limit,
-            $sorting,
-            $storagePid,
-            // $datepicker
-        );
+        // Check karte hain ki kya user ne kisi bhi filter mein kuch daala hai?
+        $isFilterApplied = ($searchTitle !== null && trim($searchTitle) !== '') || 
+            ($createDate !== null && trim($createDate) !== '') || 
+            ($modifyDate !== null && trim($modifyDate) !== '');
 
+        if ($isFilterApplied) {
+            // Case 1: Agar filter lagaya hai, toh advanced function chalega
+            $blogs = $this->blogRepository->findBlogsWithFilters(
+                $limit,
+                $sorting,
+                $storagePid,
+                $searchTitle,
+                $createDate,
+                $modifyDate
+            );
+        } else {
+            // Case 2: Agar koi filter nahi hai, toh aapka purana findBlogs chalega
+            $blogs = $this->blogRepository->findBlogs(
+                $limit,
+                $sorting,
+                $storagePid
+            );
+        }
+        if ($isFilterApplied && count($blogs) === 0) {
+            $this->addFlashMessage(
+                'No blogs found matching your filter criteria!', // Message Body
+                'Filter Alert',                                  // Message Title
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO // TYPO3 Standard Alert Type
+            );
+        }
+    
         $this->view->assign('blogs', $blogs);
+        $this->view->assign('searchTitle', $searchTitle);
+        $this->view->assign('createDate', $createDate);
+        $this->view->assign('modifyDate', $modifyDate);
 
         return $this->htmlResponse();
     }

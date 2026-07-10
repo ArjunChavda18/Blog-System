@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace NITSAN\BlogSystem\Tests\Unit\Controller;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3Fluid\Fluid\View\ViewInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 
 /**
  * Test case

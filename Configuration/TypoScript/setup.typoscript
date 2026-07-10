@@ -1,3 +1,4 @@
+config.contentObjectExceptionHandler = 0
 plugin.tx_blogsystem_ {
     view {
         templateRootPaths.0 = EXT:blog_system/Resources/Private/Templates/
@@ -13,7 +14,6 @@ plugin.tx_blogsystem_ {
     }
     features {
         #skipDefaultArguments = 1
-        # if set to 1, the enable fields are ignored in BE context
         ignoreAllEnableFieldsInBe = 0
     }
     mvc {
@@ -33,5 +33,32 @@ module.tx_blogsystem_web_blogsystem {
         partialRootPaths.1 = {$module.tx_blogsystem_.view.partialRootPath}
         layoutRootPaths.0 = EXT:blog_system/Resources/Private/Backend/Layouts/
         layoutRootPaths.1 = {$module.tx_blogsystem_.view.layoutRootPath}
+    }
+}
+
+# Dedicated AJAX endpoint - raw JSON, no HTML wrapping
+blogAjaxPage = PAGE
+blogAjaxPage {
+    typeNum = 1699999001
+
+    config {
+        disableAllHeaderCode = 1
+        admPanel = 0
+        debug = 0
+        no_cache = 1
+        additionalHeaders {
+                10.header = Content-Type: text/html; charset=utf-8
+        vendorName = NITSAN
+        extensionName = BlogSystem
+        pluginName = BlogList
+        controller = Blog
+        switchableControllerActions {
+            Blog {
+                1 = list
+            }
+        }
+        settings < plugin.tx_blogsystem_.settings
+        persistence < plugin.tx_blogsystem_.persistence
+        view < plugin.tx_blogsystem_.view
     }
 }

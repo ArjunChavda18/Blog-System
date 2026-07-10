@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace NITSAN\BlogSystem\Controller;
 
+use TYPO3\CMS\Core\Http\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use NITSAN\BlogSystem\Domain\Model\Blog;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use NITSAN\BlogSystem\Domain\Model\Comment;
-use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use NITSAN\BlogSystem\Domain\Repository\BlogRepository;
 
@@ -19,32 +20,36 @@ class BlogController extends ActionController
     {
         $this->blogRepository = $blogRepository;
     }
-    
+
     /**
      * List Action with Filtering Options
-     * 
-     * @param string|null $searchTitle
-     * @param string|null $createDate
-     * @param string|null $modifyDate
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
-    public function listAction(
-        string $searchTitle = null, 
-        string $createDate = null, 
-        string $modifyDate = null
-    ): ResponseInterface
+    #[\TYPO3\CMS\Extbase\Annotation\IgnoreValidation(['argumentName' => 'searchTitle'])]
+    #[\TYPO3\CMS\Extbase\Annotation\IgnoreValidation(['argumentName' => 'createDate'])]
+    #[\TYPO3\CMS\Extbase\Annotation\IgnoreValidation(['argumentName' => 'modifyDate'])]
+    public function listAction(): ResponseInterface
     {
-        $limit = (int)($this->settings['limit'] ?? 0);
-        $sorting = $this->settings['sortOrder'] ?? 'DESC';
+        // Merge GET (normal request) and POST (AJAX request) parameters
+        $queryParams = $this->request->getQueryParams();
+        $parsedBody  = $this->request->getParsedBody() ?? [];
+        $params      = array_merge($queryParams, $parsedBody);
+
+        $searchTitle = $params['searchTitle'] ?? null;
+        $createDate  = $params['createDate'] ?? null;
+        $modifyDate  = $params['modifyDate'] ?? null;
+        $isAjax      = isset($params['ajax']) && $params['ajax'] === '1';
+
+        $limit      = (int)($this->settings['limit'] ?? 0);
+        $sorting    = $this->settings['sortOrder'] ?? 'DESC';
         $storagePid = (int)($this->settings['overrideStoragePid'] ?? 0);
 
-        // Check karte hain ki kya user ne kisi bhi filter mein kuch daala hai?
-        $isFilterApplied = ($searchTitle !== null && trim($searchTitle) !== '') || 
-            ($createDate !== null && trim($createDate) !== '') || 
-            ($modifyDate !== null && trim($modifyDate) !== '');
+        // Check whether any filter value is provided
+        $isFilterApplied = (!empty($searchTitle) && trim($searchTitle) !== '') ||
+            (!empty($createDate) && trim($createDate) !== '') ||
+            (!empty($modifyDate) && trim($modifyDate) !== '');
 
         if ($isFilterApplied) {
-            // Case 1: Agar filter lagaya hai, toh advanced function chalega
             $blogs = $this->blogRepository->findBlogsWithFilters(
                 $limit,
                 $sorting,
@@ -54,72 +59,53 @@ class BlogController extends ActionController
                 $modifyDate
             );
         } else {
-            // Case 2: Agar koi filter nahi hai, toh aapka purana findBlogs chalega
-            $blogs = $this->blogRepository->findBlogs(
-                $limit,
-                $sorting,
-                $storagePid
-            );
+            $blogs = $this->blogRepository->findBlogs($limit, $sorting, $storagePid);
         }
-        if ($isFilterApplied && count($blogs) === 0) {
-            $this->addFlashMessage(
-                'No blogs found matching your filter criteria!', // Message Body
-                'Filter Alert',                                  // Message Title
-                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::INFO // TYPO3 Standard Alert Type
-            );
+
+        // Handle AJAX request
+        if ($isAjax) {
+
+            // Assign filtered blogs to the Fluid view
+            $this->view->assign('blogs', $blogs);
+
+            // Use the Blog/List template for rendering
+            $this->view->setTemplate('Blog/List');
+
+            // Render only the BlogItemsContent section with filtered data
+            $htmlContent = $this->view->renderSection('BlogItemsContent', [
+                'blogs' => $blogs
+            ]);
+
+            // Return only the rendered HTML section
+            return $this->htmlResponse($htmlContent);
         }
-    
+
+        // Assign blogs for the initial page load
         $this->view->assign('blogs', $blogs);
-        $this->view->assign('searchTitle', $searchTitle);
-        $this->view->assign('createDate', $createDate);
-        $this->view->assign('modifyDate', $modifyDate);
 
         return $this->htmlResponse();
     }
 
-    /**
-     * Single View Action for Blog Details
-     * 
-     * @param \NITSAN\BlogSystem\Domain\Model\Blog $blog
-     * @return \Psr\Http\Message\ResponseInterface
-     */
     public function showAction(Blog $blog): ResponseInterface
     {
         $this->view->assign('blog', $blog);
-
         return $this->htmlResponse();
     }
-    
-    /**
-     * Action to save a new comment from Frontend
-     * 
-     * @param \NITSAN\BlogSystem\Domain\Model\Blog $blog //Docblock mein type hinting
-     * @param \NITSAN\BlogSystem\Domain\Model\Comment $newComment
-     */
-    public function createCommentAction(
-        \NITSAN\BlogSystem\Domain\Model\Blog $blog, //Typo hinting
-        \NITSAN\BlogSystem\Domain\Model\Comment $newComment
-    ): ResponseInterface{  // ResponseInterface return type hinting it means return only valid http response
+
+    public function createCommentAction(Blog $blog, Comment $newComment): ResponseInterface
+    {
         $newComment->setApproved(false);
-
-        // 2. Blog object ke andar is comment ko attach karna
         $blog->addComment($newComment);
-
-        // 3. Blog Repository se database update karna
         $this->blogRepository->update($blog);
+
         return $this->redirect('show', null, null, ['blog' => $blog]);
     }
-    /**
-     * Action to delete a comment
-     * 
-     * @param \NITSAN\BlogSystem\Domain\Model\Blog $blog
-     * @param \NITSAN\BlogSystem\Domain\Model\Comment $comment
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-        public function deleteCommentAction(Blog $blog, Comment $comment): ResponseInterface
+
+    public function deleteCommentAction(Blog $blog, Comment $comment): ResponseInterface
     {
-        $blog->removeComment($comment); // Yahan chalta hai wo removeComment wala function!
+        $blog->removeComment($comment);
         $this->blogRepository->update($blog);
+
         return $this->redirect('show', null, null, ['blog' => $blog]);
     }
 }

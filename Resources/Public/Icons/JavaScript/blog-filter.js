@@ -3,10 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const blogGrid = document.getElementById('blog-grid');
 
     if (filterForm && blogGrid) {
+        
+        // --- 1. Form Filter Submit Logic ---
         filterForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Select form fields with TYPO3 namespace compatibility
             const searchTitleInput = filterForm.querySelector('[name$="[searchTitle]"]') || filterForm.querySelector('[name="searchTitle"]') || document.getElementById('searchTitle');
             const createDateInput  = filterForm.querySelector('[name$="[createDate]"]')  || filterForm.querySelector('[name="createDate"]')  || document.getElementById('createDate');
             const modifyDateInput  = filterForm.querySelector('[name$="[modifyDate]"]')  || filterForm.querySelector('[name="modifyDate"]')  || document.getElementById('modifyDate');
@@ -16,15 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const modifyDate  = modifyDateInput  ? modifyDateInput.value  : '';
 
             console.log("--- Filter Form Submitted ---");
-            console.log("Search Title:", searchTitle, "Created:", createDate, "Modified:", modifyDate);
-
+            
             const targetUrl  = filterForm.getAttribute('action') || window.location.href;
             const baseUriPart = targetUrl.split('?')[0];
 
-            // Show a loading effect while the request is being processed
             blogGrid.style.opacity = '0.5';
 
-            // Send AJAX request to the controller
             fetch(baseUriPart, {
                 method: 'POST',
                 headers: {
@@ -35,48 +33,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     searchTitle: searchTitle,
                     createDate: createDate,
                     modifyDate: modifyDate,
-                    ajax: '1' // Flag to identify AJAX request in the controller
+                    ajax: '1'
                 })
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP status ' + response.status);
-                }
-
-                // Read the response as HTML instead of JSON
+                if (!response.ok) throw new Error('HTTP status ' + response.status);
                 return response.text();
             })
             .then(htmlOutput => {
-                console.log("--- HTML Response Received ---");
-
-                // Create a temporary DOM parser
                 const parser = new DOMParser();
-
-                // Convert the HTML response into a virtual document
                 const doc = parser.parseFromString(htmlOutput, 'text/html');
-
-                // Find the blog content container inside the response
                 const targetContainer = doc.querySelector('.frame-type-blogsystem_bloglist');
 
                 if (targetContainer) {
-                    // Replace the existing blog list with the filtered blog content only
                     blogGrid.innerHTML = targetContainer.innerHTML;
                 } else {
-                    // Fallback: use the full response if the target container is not found
-                    console.warn("Warning: '.container' class not found in AJAX response. Using full output as fallback.");
                     blogGrid.innerHTML = htmlOutput;
                 }
 
-                // Restore the normal appearance after loading
                 blogGrid.style.opacity = '1';
             })
             .catch(error => {
-                console.error('AJAX Filter System Operational Error:', error);
+                console.error('AJAX Filter Error:', error);
                 blogGrid.style.opacity = '1';
             });
         });
 
-        // Handle the Clear button click
+        // --- 2. Clear Button Logic ---
         const clearBtn = document.getElementById('clear-filter');
         if (clearBtn) {
             clearBtn.addEventListener('click', function(e) {
@@ -86,9 +69,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (document.getElementById('createDate'))  document.getElementById('createDate').value  = '';
                 if (document.getElementById('modifyDate'))  document.getElementById('modifyDate').value  = '';
 
-                // Submit the form again after clearing all filters
                 filterForm.dispatchEvent(new Event('submit'));
             });
         }
+
+        // --- 3. FIXED AJAX PAGINATION LOGIC (Bypassing cHash via POST) ---
+        blogGrid.addEventListener('click', function(e) {
+            const paginationLink = e.target.closest('.blog-pagination a');
+            if (!paginationLink) return;
+
+            e.preventDefault();
+
+            const targetUrl = paginationLink.getAttribute('href');
+            if (!targetUrl) return;
+
+            // Extract all parameters from the Fluid link using the URL Object
+            const urlObj = new URL(targetUrl, window.location.origin);
+            const baseUriPart = targetUrl.split('?')[0];
+
+            // Setup a helper to build form data arguments
+            const postData = new URLSearchParams();
+            
+            // Transfer all URL parameters to the POST body to avoid triggering cHash errors
+            urlObj.searchParams.forEach((value, key) => {
+                postData.append(key, value);
+            });
+            
+            // Add the AJAX identifier flag for the controller
+            postData.append('ajax', '1');
+
+            blogGrid.style.opacity = '0.5';
+
+            // Execute the POST request to bypass cHash validation requirements
+            fetch(baseUriPart, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: postData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP status ' + response.status);
+                return response.text();
+            })
+            .then(htmlOutput => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlOutput, 'text/html');
+                const targetContainer = doc.querySelector('.frame-type-blogsystem_bloglist');
+
+                if (targetContainer) {
+                    blogGrid.innerHTML = targetContainer.innerHTML;
+                } else {
+                    blogGrid.innerHTML = htmlOutput;
+                }
+
+                blogGrid.style.opacity = '1';
+            })
+            .catch(error => {
+                console.error('AJAX Pagination Error:', error);
+                blogGrid.style.opacity = '1';
+            });
+        });
     }
 });

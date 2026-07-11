@@ -34,72 +34,79 @@
 
     <f:flashMessages />
 
-    <div id="blog-grid" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 20px; margin-top: 20px; max-width: 100%;">
+    <!-- JS code compatibility layer: added 'frame-type-blogsystem_bloglist' class here -->
+    <div id="blog-grid" class="frame-type-blogsystem_bloglist" style="width: 100%;">
         <f:render section="BlogItemsContent" arguments="{_all}" />
     </div>
-
-    <f:if condition="{pagination}">
-        <nav class="blog-pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:30px;">
-
-            <f:if condition="{paginator.hasLessPages}">
-                <f:link.action action="list" arguments="{currentPage: paginator.currentPageNumber - 1, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 14px; background:#4e73df; color:#fff; border-radius:4px; text-decoration:none;">&laquo; Prev</f:link.action>
-            </f:if>
-
-            <f:for each="{pagination.allPageNumbers}" as="page">
-                <f:if condition="{page} == {paginator.currentPageNumber}">
-                    <f:then>
-                        <span style="padding:6px 12px; background:#333; color:#fff; border-radius:4px;">{page}</span>
-                    </f:then>
-                    <f:else>
-                        <f:link.action action="list" arguments="{currentPage: page, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 12px; background:#f1f1f1; color:#333; border-radius:4px; text-decoration:none;">{page}</f:link.action>
-                    </f:else>
-                </f:if>
-            </f:for>
-
-            <f:if condition="{paginator.hasMorePages}">
-                <f:link.action action="list" arguments="{currentPage: paginator.currentPageNumber + 1, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 14px; background:#4e73df; color:#fff; border-radius:4px; text-decoration:none;">Next &raquo;</f:link.action>
-            </f:if>
-
-        </nav>
-    </f:if>
 </div>
 
+<!-- SECTION CONTENT -->
 <f:section name="BlogItemsContent">
-    <f:if condition="{blogs}">
-        <f:then>
-            <f:for each="{blogs}" as="blog">
-                <f:cycle values="{0: '#f9f9f9', 1: '#ffffff'}" as="rowColor">
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 20px; margin-top: 20px; max-width: 100%;">
+        <f:if condition="{blogs}">
+            <f:then>
+                <f:for each="{blogs}" as="blog">
+                    <f:cycle values="{0: '#f9f9f9', 1: '#ffffff'}" as="rowColor">
 
-                    <f:link.action action="show" arguments="{blog: blog}" style="text-decoration: none; color: inherit; display: block; width: calc(33.333% - 14px); min-width: 280px; box-sizing: border-box;">
-                        <div class="blog-card" style="background-color: {rowColor}; padding: 20px; border-radius: 8px; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+                        <f:link.action action="show" arguments="{blog: blog}" style="text-decoration: none; color: inherit; display: block; width: calc(33.333% - 14px); min-width: 280px; box-sizing: border-box;">
+                            <div class="blog-card" style="background-color: {rowColor}; padding: 20px; border-radius: 8px; border: 1px solid #eee; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
 
-                            <h2 style="margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; color: #333;">{blog.title}</h2>
-                            
-                            <f:if condition="{blog.image}">
-                                <div class="blog-thumbnail" style="margin-bottom: 15px; max-width: 250px;">
-                                    <f:for each="{blog.image}" as="thumbImage" iteration="imgIterator">
-                                        <f:if condition="{imgIterator.isFirst}">
-                                            <f:image image="{thumbImage}" width="250" alt="{blog.title}" style="width: 100%; height: auto; border-radius: 4px;" />
-                                        </f:if>
-                                    </f:for>
-                                </div>
-                            </f:if>
+                                <h2 style="margin-top: 0; margin-bottom: 15px; font-size: 1.4rem; color: #333;">{blog.title}</h2>
+                                
+                                <f:if condition="{blog.image}">
+                                    <div class="blog-thumbnail" style="margin-bottom: 15px; max-width: 250px;">
+                                        <f:for each="{blog.image}" as="thumbImage" iteration="imgIterator">
+                                            <f:if condition="{imgIterator.isFirst}">
+                                                <f:image image="{thumbImage}" width="250" alt="{blog.title}" style="width: 100%; height: auto; border-radius: 4px;" />
+                                            </f:if>
+                                        </f:for>
+                                    </div>
+                                </f:if>
 
-                            <p style="color: #666; font-size: 1.05rem; line-height: 1.5; margin: 0;">
-                                <f:format.crop maxCharacters="30" append="..."><f:format.stripTags>{blog.description}</f:format.stripTags></f:format.crop>
-                            </p>
+                                <p style="color: #666; font-size: 1.05rem; line-height: 1.5; margin: 0;">
+                                    <f:format.crop maxCharacters="30" append="..."><f:format.stripTags>{blog.description}</f:format.stripTags></f:format.crop>
+                                </p>
 
-                        </div>
-                    </f:link.action>
+                            </div>
+                        </f:link.action>
 
-                </f:cycle>
-            </f:for>
-        </f:then>
-        <f:else>
-            <div style="width: 100%; text-align: center; padding: 40px; color: #888; font-size: 16px; font-weight: 500;">
-                No blogs found matching your filter criteria.
-            </div>
-        </f:else>
+                    </f:cycle>
+                </f:for>
+            </f:then>
+            <f:else>
+                <div style="width: 100%; text-align: center; padding: 40px; color: #888; font-size: 16px; font-weight: 500;">
+                    No blogs found matching your filter criteria.
+                </div>
+            </f:else>
+        </f:if>
+    </div>
+
+    <!-- MOVED INSIDE THE SECTION: So it re-renders automatically during AJAX calls -->
+    <f:if condition="{pagination}">
+        <f:if condition="{pagination.allPageNumbers -> f:count()} > 1">
+            <nav class="blog-pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:40px; width: 100%;">
+
+                <f:if condition="{paginator.hasLessPages}">
+                    <f:link.action action="list" arguments="{currentPage: paginator.currentPageNumber - 1, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 14px; background:#4e73df; color:#fff; border-radius:4px; text-decoration:none;">&laquo; Prev</f:link.action>
+                </f:if>
+
+                <f:for each="{pagination.allPageNumbers}" as="page">
+                    <f:if condition="{page} == {paginator.currentPageNumber}">
+                        <f:then>
+                            <span style="padding:6px 12px; background:#333; color:#fff; border-radius:4px;">{page}</span>
+                        </f:then>
+                        <f:else>
+                            <f:link.action action="list" arguments="{currentPage: page, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 12px; background:#f1f1f1; color:#333; border-radius:4px; text-decoration:none;">{page}</f:link.action>
+                        </f:else>
+                    </f:if>
+                </f:for>
+
+                <f:if condition="{paginator.hasMorePages}">
+                    <f:link.action action="list" arguments="{currentPage: paginator.currentPageNumber + 1, searchTitle: searchTitle, createDate: createDate, modifyDate: modifyDate}" style="padding:6px 14px; background:#4e73df; color:#fff; border-radius:4px; text-decoration:none;">Next &raquo;</f:link.action>
+                </f:if>
+
+            </nav>
+        </f:if>
     </f:if>
 </f:section>
 

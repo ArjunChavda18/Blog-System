@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const doc = parser.parseFromString(htmlOutput, 'text/html');
 
                 // Find the blog content container inside the response
-                const targetContainer = doc.querySelector('.frame-layout-0');
+                const targetContainer = doc.querySelector('.frame-type-blogsystem_bloglist');
 
                 if (targetContainer) {
                     // Replace the existing blog list with the filtered blog content only

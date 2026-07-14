@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 namespace NITSAN\BlogSystem\Domain\Model;
-
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Comment extends AbstractEntity //give autometic power to Comment class for pageid and unique id.

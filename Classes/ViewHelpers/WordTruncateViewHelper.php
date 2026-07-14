@@ -10,7 +10,7 @@ class WordTruncateViewHelper extends AbstractViewHelper
 {
     public function initializeArguments(): void
     {
-        // Hum do arguments register kar rahe hain: content aur limit
+        // we are registering two arguments: content and limit
         $this->registerArgument('content', 'string', 'The blog description text', true);
         $this->registerArgument('limit', 'integer', 'Number of words to display', false, 5);
     }
@@ -20,13 +20,13 @@ class WordTruncateViewHelper extends AbstractViewHelper
         $content = $this->arguments['content'];
         $limit = $this->arguments['limit'];
 
-        // 1. Saare HTML tags saaf karein
+        // 1. remove html tags from the content to get plain text
         $plainText = strip_tags($content);
 
-        // 2. Text ko words ke array mein todein
+        // 2. join text into words and check if it exceeds the limit
         $words = explode(' ', $plainText);
 
-        // 3. Agar total words limit se zyada hain, toh cut karein aur '...' jodein
+        // 3. if total words exceed the limit, slice the array and append "..."
         if (count($words) > $limit) {
             $words = array_slice($words, 0, $limit);
             return implode(' ', $words) . '...';

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace NITSAN\BlogSystem\Domain\Model;
 
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * This file is part of the "Blog Management System" Extension for TYPO3 CMS.

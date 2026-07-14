@@ -1,5 +1,4 @@
-config.contentObjectExceptionHandler = 0
-plugin.tx_blogsystem_ {
+plugin.tx_blogsystem {
     view {
         templateRootPaths.0 = EXT:blog_system/Resources/Private/Templates/
         templateRootPaths.1 = {$plugin.tx_blogsystem_.view.templateRootPath}
@@ -47,18 +46,16 @@ blogAjaxPage {
         debug = 0
         no_cache = 1
         additionalHeaders {
-                10.header = Content-Type: text/html; charset=utf-8
-        vendorName = NITSAN
-        extensionName = BlogSystem
-        pluginName = BlogList
-        controller = Blog
-        switchableControllerActions {
-            Blog {
-                1 = list
-            }
+            10.header = Content-Type: application/json; charset=utf-8
         }
-        settings < plugin.tx_blogsystem_.settings
-        persistence < plugin.tx_blogsystem_.persistence
-        view < plugin.tx_blogsystem_.view
+    }
+    10 = EXTBASEPLUGIN
+    10 {
+        extensionName = BlogSystem
+        pluginName = BlogAjaxList
+
+        settings < plugin.tx_blogsystem_bloglist.settings
+        persistence < plugin.tx_blogsystem_bloglist.persistence
+        view < plugin.tx_blogsystem_bloglist.view
     }
 }

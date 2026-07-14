@@ -14,7 +14,7 @@ $GLOBALS['TCA']['tt_content']['types'][$pluginSignature] = [
             --palette--;;general,
             --palette--;;headers,
         --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.plugin,
-            pages, recursive, pi_flexform,
+            pi_flexform,
         --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
             --palette--;;hidden,
             --palette--;;access,

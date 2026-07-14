@@ -3,11 +3,8 @@
 declare(strict_types=1);
 
 namespace NITSAN\BlogSystem\Controller;
-
-use TYPO3\CMS\Core\Http\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use NITSAN\BlogSystem\Domain\Model\Blog;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use NITSAN\BlogSystem\Domain\Model\Comment;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -49,18 +46,14 @@ class BlogController extends ActionController
             (!empty($createDate) && trim($createDate) !== '') ||
             (!empty($modifyDate) && trim($modifyDate) !== '');
 
-        if ($isFilterApplied) {
-            $blogs = $this->blogRepository->findBlogsWithFilters(
-                0,
-                $sorting,
-                $storagePid,
-                $searchTitle,
-                $createDate,
-                $modifyDate
-            );
-        } else {
-            $blogs = $this->blogRepository->findBlogs(0, $sorting, $storagePid);
-        }
+        $blogs = $this->blogRepository->findBlogs(
+            0, // Limit
+            $sorting,
+            $storagePid,
+            $isFilterApplied ? $searchTitle : null,
+            $isFilterApplied ? $createDate : null,
+            $isFilterApplied ? $modifyDate : null
+        );
 
         $currentPage = $this->request->hasArgument('currentPage')
             ? (int)$this->request->getArgument('currentPage')

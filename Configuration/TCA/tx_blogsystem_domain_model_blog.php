@@ -105,6 +105,8 @@ return [
             'description' => 'LLL:EXT:blog_system/Resources/Private/Language/locallang_db.xlf:tx_blogsystem_domain_model_blog.description.description',
             'config' => [
                 'type' => 'text',
+                'enableRichtext' => true,
+                'richtextConfiguration' => 'default',
                 'cols' => 40,
                 'rows' => 15,
                 'default' => ''

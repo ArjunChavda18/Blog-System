@@ -7,7 +7,7 @@
             "name": "Arjun",
             "role": "Developer",
             "email": "arjunchavda@gmail.com",
-            "homepage": "Nitsan"
+            "homepage": "https://nitsan.in"
         }
     ],
     "license": "GPL-2.0-or-later",
@@ -45,7 +45,7 @@
         },
         "typo3/cms-core": {
             "site-sets": {
-                "blog_system": "Configuration/Sets/BlogSystem"
+                "blogsystem": "Configuration/Sets/BlogSystem"
             }
         }
     }

@@ -13,9 +13,9 @@
 
     <!-- Full Description (RTE Render) -->
     <div class="blog-content" style="margin: 20px 0; line-height: 1.6; font-size: 1.1rem;">
-        <f:format.html>
+        <f:sanitize.html>
             <f:format.crop maxCharacters="200" append="...">{blog.description}</f:format.crop>
-        </f:format.html>
+        </f:sanitize.html>
     </div>
 
     <!-- All Images (Looping through multiple FAL images) -->

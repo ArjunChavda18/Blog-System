@@ -1,16 +1,11 @@
-name: 'blog_system'
-label: 'Blog Management System'
-homepage: 'https://typo3.org'
-dependencies:
-  - 'typo3/cms-core'
-  - 'typo3/cms-fluid-styled-content'
-
 routeEnhancers:
   BlogSystem:
     type: Extbase
     extension: BlogSystem
     plugin: BlogList
     routes:
+      - routePath: '/'
+        _controller: 'Blog::list'
       - routePath: '/{blog_title}'
         _controller: 'Blog::show'
         _arguments:

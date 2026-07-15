@@ -19,7 +19,7 @@ return [
         'iconfile' => 'EXT:blog_system/Resources/Public/Icons/tx_blogsystem_domain_model_blog.gif'
     ],
     'types' => [
-        '1' => ['showitem' => 'title, description, image, comments,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, sys_language_uid, l10n_parent, l10n_diffsource, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, starttime, endtime'],
+        '1' => ['showitem' => 'title, path_segment, description, image, comments,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, sys_language_uid, l10n_parent, l10n_diffsource, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, starttime, endtime'],
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -99,6 +99,23 @@ return [
             ],
             
         ],
+
+        // ADDED: The URL segment path builder configuration below
+        'path_segment' => [
+            'exclude' => true,
+            'label' => 'URL Segment',
+            'config' => [
+                'type' => 'slug',
+                'generatorOptions' => [
+                    'fields' => ['title'], 
+                    'fieldSeparator' => '/',
+                    'prefixParentPageSlug' => false,
+                ],
+                'fallbackCharacter' => '-',
+                'eval' => 'uniqueInSite',
+            ],
+        ],
+        
         'description' => [
             'exclude' => true,
             'label' => 'LLL:EXT:blog_system/Resources/Private/Language/locallang_db.xlf:tx_blogsystem_domain_model_blog.description',
